@@ -28,4 +28,6 @@ def SA(tasks):
         if rd.uniform(0,1,size=1) < np.exp(eps*(next_profit-profit)/i):
             solution = next_sol
             profit = next_profit
+    
+    return solution
 
