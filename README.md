@@ -9,6 +9,7 @@ Python 3.6+
 Files:
 - `parse.py`: functions to read/write inputs and outputs
 - `solver.py`: where you should be writing your code to solve inputs
+- `SA_solver.py`: where simulated annealing is used
 - `Task.py`: contains a class that is useful for processing inputs
 
 When writing inputs/outputs:
