@@ -3,8 +3,6 @@ import numpy.random as rd
 import Task
 import math
 
-eps = 0.0001
-
 def seed_sol(tasks):
     """
     Args:
