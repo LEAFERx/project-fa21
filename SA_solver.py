@@ -39,12 +39,14 @@ def seed_sol(tasks):
 
 def trans_sol(sol,tasks,end):
     res = sol.copy()
-    op = 1
     #swap
-    if op == 1:
+    if end < len(sol) and end > 0:
         idx1 = rd.randint(0,end)
         idx2 = idx1 + rd.randint(1,len(sol)-idx1)
         res[idx1],res[idx2] = res[idx2],res[idx1]
+    else:
+        idx = rd.choice(len(sol),2)
+        res[idx[1]],res[idx[0]] = res[idx[0]],res[idx[1]]
     #insert
 
     #reverse
@@ -88,8 +90,8 @@ def SA(tasks):
     Returns:
         output: list of igloos in order of polishing  
     """
-    epochs = 10
-    M = 10000
+    epochs = 100
+    M = 500
     #solution,end = seed_sol(tasks)
     solution = (rd.choice(len(tasks),len(tasks),replace=False)+1).tolist()
     temperature_list = []

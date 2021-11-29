@@ -9,7 +9,6 @@ if __name__ == '__main__':
     submission = {}
     
     for folder in os.listdir("inputs"):
-        print("find folder:",folder)
         if not folder.startswith('.'):
             for input_path in os.listdir("inputs/" + folder):
                 graph_name = input_path.split('.')[0]

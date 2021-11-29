@@ -1,2 +1,2 @@
-<p style="color:#66CCFF";>Student_Solution</p>
+Student_Solution
 3037534078,3035294094,3037534091

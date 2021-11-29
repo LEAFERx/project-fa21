@@ -17,9 +17,17 @@ def solve(tasks):
 
 # Here's an example of how to run your solver.
 if __name__ == '__main__':
-    for input_path in os.listdir('inputs/'):
-        output_path = 'outputs/' + input_path[:-3] + '.out'
-        print("now is:",output_path)
-        tasks = read_input_file('inputs/'+input_path)
-        output = solve(tasks)
-        write_output_file(output_path, output)
+    for folder in os.listdir('inputs'):
+        if not folder.startswith('.'):
+            for input_path in os.listdir("inputs/" + folder):
+                output_path = 'outputs/' + folder+'/' + input_path[:-3] + '.out'
+                print("now is:",output_path)
+                tasks = read_input_file('inputs/'+ folder+'/'+input_path)
+                output = solve(tasks)
+                write_output_file(output_path, output)
+    # input_path = 'large-112.in'
+    # output_path = 'outputs/' + input_path[:-3] + '.out'
+    # print("now is:",output_path)
+    # tasks = read_input_file('inputs/'+ input_path)
+    # output = solve(tasks)
+    # write_output_file(output_path, output)
