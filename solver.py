@@ -2,6 +2,9 @@ from parse import read_input_file, write_output_file
 import os
 import SA_solver as sa
 
+# TODO[chenyu]: After implement in sa.cpp, uncomment next line
+# import _sa
+
 def solve(tasks):
     """
     Args:
@@ -12,6 +15,10 @@ def solve(tasks):
     sol,end = sa.SA(tasks)
     print("final get:",sa.eval_sol(sol,tasks,end))
     return sol[:end]
+    # TODO[chenyu]: After implement in sa.cpp, replace above code with below:
+    sol, profit = _sa.solve(tasks)
+    print(f"result: profit {profit}, solution len {len(sol)}")
+    return sol
 
 
 
