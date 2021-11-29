@@ -1,5 +1,5 @@
 #include "sa.h"
-
+#include <assert.h> 
 Solution seed_sol(const std::vector<Task> tasks) {
     auto sol = Solution();
     // sol.sols = {1, 2, 3, 4};
@@ -46,13 +46,59 @@ Solution seed_sol(const std::vector<Task> tasks) {
 
 
 
+std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks) {
+    std::vector<int> res = sol.sols;
+    if (sol.end < sol.sols.size() and sol.end > 0){
+        int idx1 = rand_int(0,sol.end);
+        int idx2 = idx1 + rand_int(1,(sol.sols.size())-idx1);
+        res[idx1],res[idx2] = res[idx2],res[idx1];
+    }
+    else{
+        int idx1 = rand_int(0,sol.end);
+        int idx2 = rand_int(0,sol.end);
 
-void trans_sol(Solution& sol, const std::vector<Task> tasks) {
-    return;
+        while(idx1 ==idx2){
+            idx2 = rand_int(0,sol.end);
+        }
+
+        res[idx2],res[idx1] = res[idx1],res[idx2];
+    }
+    // #insert
+
+    // reverse
+    return res;
+    
 }
 
 float eval_sol(Solution& sol, const std::vector<Task> tasks) {
-    return 0;
+    float curr_time = 0;
+    float total_profit = 0;
+    int i;
+    if (sol.end == -1){
+        sol.end = sol.sols.size();
+        assert (sol.end == tasks.size());  
+        for (i=0;i<sol.end;i++){
+            if (tasks[sol.sols[i]-1].duration + curr_time >= 1440){
+                i -= 1;
+                break;
+            }
+            float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
+            Task tsk = tasks[sol.sols[i]-1];
+            total_profit +=  tsk.get_late_benefit(exceed_time);
+            curr_time += tasks[sol.sols[i]-1].duration ;
+        }
+    }
+    else{
+        for (i=0;i<sol.end;i++){
+            float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
+            Task tsk = tasks[sol.sols[i]-1];
+            total_profit +=  tsk.get_late_benefit(exceed_time);
+            curr_time += tasks[sol.sols[i]-1].duration ;
+        }
+    }
+    sol.end = i+1;
+
+    return total_profit;
 }
 
 std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
