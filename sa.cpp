@@ -9,7 +9,7 @@ Solution seed_sol(const std::vector<Task> tasks) {
     float curr_time = 0;
     std::vector<int> residual_list;
     for (int i = 0; i < n; i++){
-        residual_list[i] = i+1; 
+        residual_list.push_back(i+1); 
     }
     for (int i = 0; i < n ; i++){
         float ratio = 0;
@@ -102,8 +102,67 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
 }
 
 std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
-    auto sol = seed_sol(tasks);
-    trans_sol(sol, tasks);
-    float profit = eval_sol(sol, tasks);
-    return std::make_pair(sol, profit);
+    // auto sol = seed_sol(tasks);
+    // trans_sol(sol, tasks);
+    // float profit = eval_sol(sol, tasks);
+    // return std::make_pair(sol, profit);
+    int epochs = 100;
+    int M = 500;
+    Solution solution;
+    int n = tasks.size();
+    for (int i = 0; i < n; i++){
+        solution.sols.push_back(i+1); 
+    }
+    std::random_shuffle ( solution.sols.begin(), solution.sols.end() );
+   
+    std::vector<float> temperature_list;
+    float initial_acceptance = 0.4;
+    float profit = eval_sol(solution,tasks);
+
+    for (int i=0;i<10;i++){
+        std::vector<int>  next_sol  = trans_sol(solution,tasks);
+        Solution Next_sol;
+        Next_sol.sols = next_sol;
+        Next_sol.end = solution.end;
+        float next_profit = eval_sol(Next_sol,tasks);
+        temperature_list.push_back(-abs(next_profit-profit)/log(initial_acceptance));
+
+        if (rand_int(0,10)/10.0 < initial_acceptance){
+            solution.sols = next_sol;            
+            profit = next_profit;
+            solution.end = Next_sol.end;
+        }
+    }
+
+    for (int i=0; i < epochs; i++) {
+        int flag = 0;
+        for (int m = 0; m < M ;m++){
+            std::vector<int> next_sol    = trans_sol(solution,tasks);
+            Solution Next_sol;
+            Next_sol.sols = next_sol;
+            Next_sol.end = solution.end;
+            float next_profit = eval_sol(Next_sol,tasks);
+            if (next_profit > profit){
+                solution.sols = next_sol ;           
+                profit = next_profit;
+                solution.end = Next_sol.end;
+            }
+            else{
+                float r = rand_int(0,10)/10.0;
+                float max = *std::max_element(temperature_list.begin(),temperature_list.end());
+                if (r < exp((next_profit-profit)/max)){
+                    flag += 1;
+                    solution.sols = next_sol ;           
+                    profit = next_profit;
+                    solution.end = Next_sol.end;
+                }
+            }
+        }
+        if (flag > 0){
+            // temperature_list = np.delete(temperature_list,temperature_list.argmax());    //#pop the max
+            temperature_list.erase(std::max_element(temperature_list.begin(),temperature_list.end()));
+            temperature_list .push_back(mean(temperature_list)/flag);
+        }
+    }
+
 }

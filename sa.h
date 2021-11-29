@@ -32,6 +32,16 @@ int rand_int(int a, int b){
     return a + ( std::rand() % ( b - a + 1 ) );
 }
 
-
+float mean(std::vector<float> a){
+     float return_value = 0.0;
+        int n = a.size();
+       
+        for ( int i=0; i < n; i++)
+        {
+            return_value += a[i];
+        }
+       
+        return ( return_value / n);
+}
 
 #endif
