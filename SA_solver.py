@@ -77,6 +77,9 @@ def eval_sol(sol,tasks,n=None):
             curr_time += tasks[sol[i]-1].get_duration() 
     else:
         for i in range(n):          #iter all real task
+            if tasks[sol[i]-1].get_duration() + curr_time >= 1440:
+                i -= 1
+                break
             exceed_time = tasks[sol[i]-1].get_duration() + curr_time - tasks[sol[i]-1].get_deadline()
             total_profit +=  tasks[sol[i]-1].get_late_benefit(exceed_time)
             curr_time += tasks[sol[i]-1].get_duration() 
@@ -91,9 +94,9 @@ def SA(tasks):
         output: list of igloos in order of polishing  
     """
     epochs = 100
-    M = 500
-    #solution,end = seed_sol(tasks)
-    solution = (rd.choice(len(tasks),len(tasks),replace=False)+1).tolist()
+    M = 200
+    solution,end = seed_sol(tasks)
+    #solution = (rd.choice(len(tasks),len(tasks),replace=False)+1).tolist()
     temperature_list = []
     initial_acceptance = 0.4
     profit,end = eval_sol(solution,tasks)
