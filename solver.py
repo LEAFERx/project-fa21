@@ -29,6 +29,10 @@ def dp_solver(tasks):
 
     val[1][tasks[0].get_duration()] = tasks[0].get_max_benefit()
     path[1][tasks[0].get_duration()].append(1)
+    for j in range(tasks[0].get_duration()+1,w+1):
+        val[1][j] = val[1][j-1]
+        path[1][j] = path[1][j-1].copy()
+
     for i in range(1,n):  #initialization
         for j in range(0,w+1):
             if tasks[i].get_duration() > j:
@@ -40,7 +44,7 @@ def dp_solver(tasks):
                     val[i+1][j] = val[i][j]
                     path[i+1][j] = path[i][j].copy()
                 else:
-                    path[i+1][j] = path[i][j].copy()
+                    path[i+1][j] = path[i][j-tasks[i].get_duration()].copy()
                     path[i+1][j].append(i+1)
     
     idx = -1
@@ -49,6 +53,7 @@ def dp_solver(tasks):
         if val[n][j] > max:
             idx = j
             max = val[n][j]
+    print("max:",max)
     return path[n][idx]
 
 
@@ -67,4 +72,8 @@ if __name__ == '__main__':
     print("now is:",output_path)
     tasks = read_input_file('inputs/'+ input_path)
     output = dp_solver(tasks)
-    write_output_file(output_path, output)
+    profit,end = sa.eval_sol(output,tasks,len(output))
+    print('end:',end)
+    print('out:',len(output))
+    print(profit)
+    write_output_file(output_path, output[:end])
