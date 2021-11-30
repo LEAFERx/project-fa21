@@ -4,7 +4,7 @@ import os
 import SA_solver as sa
 
 # TODO[chenyu]: After implement in sa.cpp, uncomment next line
-# import _sa
+import _sa
 
 def solve(tasks):
     """
@@ -13,9 +13,9 @@ def solve(tasks):
     Returns:
         output: list of igloos in order of polishing  
     """
-    sol,end = sa.seed_sol(tasks)
-    print("final get:",sa.eval_sol(sol,tasks,end))
-    return sol[:end]
+    # sol,end = sa.seed_sol(tasks)
+    # print("final get:",sa.eval_sol(sol,tasks,end))
+    # return sol[:end]
     # TODO[chenyu]: After implement in sa.cpp, replace above code with below:
     sol, profit = _sa.solve(tasks)
     print(f"result: profit {profit}, solution len {len(sol)}")
@@ -59,21 +59,21 @@ def dp_solver(tasks):
 
 # Here's an example of how to run your solver.
 if __name__ == '__main__':
-    # for folder in os.listdir('inputs'):
-    #     if not folder.startswith('.'):
-    #         for input_path in os.listdir("inputs/" + folder):
-    #             output_path = 'outputs/' + folder+'/' + input_path[:-3] + '.out'
-    #             print("now is:",output_path)
-    #             tasks = read_input_file('inputs/'+ folder+'/'+input_path)
-    #             output = solve(tasks)
-    #             write_output_file(output_path, output)
-    input_path = 'small-181.in'
-    output_path = 'outputs/' + input_path[:-3] + '.out'
-    print("now is:",output_path)
-    tasks = read_input_file('inputs/'+ input_path)
-    output = dp_solver(tasks)
-    profit,end = sa.eval_sol(output,tasks,len(output))
-    print('end:',end)
-    print('out:',len(output))
-    print(profit)
-    write_output_file(output_path, output[:end])
+    for folder in os.listdir('inputs'):
+        if not folder.startswith('.'):
+            for input_path in os.listdir("inputs/" + folder):
+                output_path = 'outputs/' + folder+'/' + input_path[:-3] + '.out'
+                print("now is:",output_path)
+                tasks = read_input_file('inputs/'+ folder+'/'+input_path)
+                output = solve(tasks)
+                write_output_file(output_path, output)
+    # input_path = 'small/small-181.in'
+    # output_path = 'outputs/' + input_path[:-3] + '.out'
+    # print("now is:",output_path)
+    # tasks = read_input_file('inputs/'+ input_path)
+    # output = dp_solver(tasks)
+    # profit,end = sa.eval_sol(output,tasks,len(output))
+    # print('end:',end)
+    # print('out:',len(output))
+    # print(profit)
+    # write_output_file(output_path, output[:end])
