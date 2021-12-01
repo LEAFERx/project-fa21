@@ -1,6 +1,8 @@
 #include "sa.h"
 #include <assert.h> 
 #include <iostream>
+#include <algorithm>
+
 Solution seed_sol(const std::vector<Task> tasks) {
     auto sol = Solution();
     // sol.sols = {1, 2, 3, 4};
@@ -47,11 +49,9 @@ Solution seed_sol(const std::vector<Task> tasks) {
     return sol;
 }
 
-
-
 std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks) {
     std::vector<int> res = sol.sols;
-    if (sol.end < sol.sols.size() and sol.end > 0){
+    if (sol.end < sol.sols.size() && sol.end > 0){
         int idx1 = rand_int(0,sol.end);
         int idx2 = idx1 + rand_int(1,(sol.sols.size())-idx1);
         res[idx1],res[idx2] = res[idx2],res[idx1];
