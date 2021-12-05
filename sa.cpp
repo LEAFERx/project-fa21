@@ -133,16 +133,16 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
     float total_profit = 0;
     int i;
 
-    for(std::vector<int>::iterator iter = sol.sols.begin();sol.sols.end();std::next(iter))
+    for(std::vector<int>::iterator iter = sol.sols.begin();iter != sol.sols.end();std::next(iter))
     {
         if(*iter > sol.sols.size() || *iter <= 0)
         {
-            cout<<"not valid solution"<<endl;
+            std::cout<<"not valid solution"<<std::endl;
             return -1.0;
         }
         if(std::count(sol.sols.begin(),sol.sols.end(),*iter) > 1)       // cannot repeat tasks
         {
-            cout<<"not valid solution"<<endl;
+            std::cout<<"not valid solution"<<std::endl;
             return -1.0;
         }
     }
