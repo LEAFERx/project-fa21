@@ -64,7 +64,7 @@ def cli(solver, eval, force_replace, case):
                     tasks = read_input_file('inputs/'+ folder+'/'+input_path)
                     if os.path.exists(output_path):
                         old_sol = read_output_file(output_path)
-                        old_profit = _sa.eval(old_sol, tasks)
+                        old_profit, _ = _sa.eval(old_sol, tasks)
                     else:
                         old_profit = -1
                     if solver == 'sapy':
@@ -84,16 +84,15 @@ def cli(solver, eval, force_replace, case):
         tasks = read_input_file(input_path)
         if os.path.exists(output_path):
             old_sol = read_output_file(output_path)
-            old_profit = sa.eval_sol(old_sol, tasks, len(old_sol))[0]
+            old_profit, _ = _sa.eval(old_sol, tasks)
         else:
-            old_profit = None
+            old_profit = -1
         if solver == 'sapy':
             sol, end = sa.SA(tasks)
-            profit = sa.eval_sol(sol, tasks, end)[0]
-            sol = sol[:end]
+            profit, sol = _sa.eval(sol, tasks)
         elif solver == 'dp':
             sol = dp_solver(tasks)
-            profit = sa.eval_sol(sol, tasks, len(sol))[0]
+            profit, sol = _sa.eval(sol, tasks)
         else:
             sol, profit = _sa.solve(tasks)
             print("finish, the sol:",sol)
