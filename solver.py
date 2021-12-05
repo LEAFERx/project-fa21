@@ -62,7 +62,7 @@ def cli(solver, eval, force_replace, case):
         tasks = read_input_file(input_path)
         if os.path.exists(output_path):
             old_sol = read_output_file(output_path)
-            old_profit = _sa.eval_sol(old_sol, tasks, len(old_sol))[0]
+            old_profit = sa.eval_sol(old_sol, tasks, len(old_sol))[0]
         else:
             old_profit = None
         if solver == 'sapy':
