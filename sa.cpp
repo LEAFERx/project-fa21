@@ -1,7 +1,7 @@
 #include "sa.h"
 #include <assert.h> 
 #include <iostream>
-#include <algorithm>
+
 
 Solution seed_sol(const std::vector<Task> tasks) {
     auto sol = Solution();
@@ -184,7 +184,7 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
         if (flag > 0){
             // temperature_list = np.delete(temperature_list,temperature_list.argmax());    //#pop the max
             temperature_list.erase(std::max_element(temperature_list.begin(),temperature_list.end()));
-            temperature_list .push_back(mean(temperature_list)/flag);
+            temperature_list.push_back(mean(temperature_list)/flag);
         }
     }
 
