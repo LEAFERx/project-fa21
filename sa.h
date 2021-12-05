@@ -35,7 +35,14 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks);
 int rand_int(int a, int b){
     static std::random_device rd;
     static std::mt19937 rng(rd());
-    std::uniform_int_distribution<int> dist(a, b + 1);
+    std::uniform_int_distribution<int> dist(a, b);
+    return dist(rng);
+}
+
+double rand_01(){
+    static std::random_device rd;
+    static std::default_random_engine rng {rd()};
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
     return dist(rng);
 }
 
