@@ -154,14 +154,14 @@ std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks)
     }
 }
 
-float eval_sol(Solution& sol, const std::vector<Task> tasks) {
+float eval_sol(Solution& sol, const std::vector<Task>& tasks) {
     float curr_time = 0;
     float total_profit = 0;
     int i;
 
     for(std::vector<int>::iterator iter = sol.sols.begin();iter != sol.sols.end();iter++)
     {
-        if(*iter > sol.sols.size() || *iter <= 0)
+        if(*iter > tasks.size() || *iter <= 0)
         {
             // std::cout<<"not valid solution"<<std::endl;
             return -1.0;
@@ -169,7 +169,7 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
         if(std::count(sol.sols.begin(),sol.sols.end(),*iter) > 1)       // cannot repeat tasks
         {
             // std::cout<<"not valid solution"<<std::endl;
-            return -1.0;
+            return -2.0;
         }
     }
 

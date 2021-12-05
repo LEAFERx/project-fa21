@@ -27,9 +27,13 @@ class Solution {
 public:
     std::vector<int> sols;
     int end = -1;
+
+    Solution() {}
+    Solution(const std::vector<int> _sols) : sols(_sols) {}
 };
 
 std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks);
+float eval_sol(Solution& sol, const std::vector<Task>& tasks);
 
 
 int rand_int(int a, int b){

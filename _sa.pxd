@@ -16,4 +16,8 @@ cdef extern from "sa.h":
         vector[int] sols
         int end
 
+        CSolution()
+        CSolution(vector[int] sols)
+
     pair[CSolution, float] SA_solve(const vector[CTask]& tasks)
+    float eval_sol(CSolution& sol, const vector[CTask]& tasks)
