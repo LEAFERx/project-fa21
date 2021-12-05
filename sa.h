@@ -41,7 +41,7 @@ int rand_int(int a, int b){
 
 double rand_01(){
     static std::random_device rd;
-    static std::default_random_engine rng {rd()};
+    static std::default_random_engine rng(rd());
     static std::uniform_real_distribution<double> dist(0.0, 1.0);
     return dist(rng);
 }
