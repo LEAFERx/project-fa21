@@ -43,7 +43,7 @@ def cli(solver, eval, force_replace, case):
                     tasks = read_input_file('inputs/'+ folder+'/'+input_path)
                     if os.path.exists(output_path):
                         old_sol = read_output_file(output_path)
-                        old_profit = sa.eval_sol(old_sol, tasks)[0]
+                        old_profit = sa.eval_sol(old_sol, tasks, len(old_sol))[0]
                     else:
                         old_profit = None
                     if solver == 'sapy':
@@ -56,7 +56,9 @@ def cli(solver, eval, force_replace, case):
                     else:
                         sol, profit = _sa.solve(tasks)
                     print(f"Get Profit: {profit}")
+                    print(f"Old Profit: {old_profit}")
                     if old_profit < profit or force_replace:
+                        print(f"Replace existing file {output_path}")
                         write_output_file(output_path, sol)
     else:
         tasks = read_input_file(input_path)
@@ -76,9 +78,10 @@ def cli(solver, eval, force_replace, case):
             sol, profit = _sa.solve(tasks)
             print("finish, the sol:",sol)
         print(f"Get Profit: {profit}")
+        print(f"Old Profit: {old_profit}")
         if old_profit < profit or force_replace:
             print(f"Replace existing file {output_path}")
-            #write_output_file(output_path, sol)
+            write_output_file(output_path, sol)
             
 
 def solve_sapy(tasks):
