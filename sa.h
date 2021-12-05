@@ -35,7 +35,7 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks);
 int rand_int(int a, int b){
     static std::random_device rd;
     static std::mt19937 rng(rd());
-    std::uniform_int_distribution<int> dist(a, b);
+    std::uniform_int_distribution<int> dist(a, b + 1);
     return dist(rng);
 }
 
