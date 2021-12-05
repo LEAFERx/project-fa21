@@ -1,6 +1,7 @@
 #include "sa.h"
 #include <assert.h> 
 #include <iostream>
+#include <cmath>
 
 
 Solution seed_sol(const std::vector<Task> tasks) {
@@ -32,8 +33,6 @@ Solution seed_sol(const std::vector<Task> tasks) {
             std::cout<<"line 30 "<<  sol.end <<"\n";     // if all task are not valid
             for (int k = sol.end; k < sol.end + n; k++ ){
             sol.sols[k] = residual_list[k-sol.end];
-            sol.end ;
-            std::cout<<"line 34 "<<  sol.end <<"\n"; 
             }
             i -= 1;
             break;
@@ -49,40 +48,92 @@ Solution seed_sol(const std::vector<Task> tasks) {
     return sol;
 }
 
-std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks) {
+std::vector<int>  insert_task(Solution& sol, const std::vector<Task> tasks)
+{
     std::vector<int> res = sol.sols;
-    if (sol.end < sol.sols.size() && sol.end > 0){
-        int idx1 = rand_int(0,sol.end);
-        int idx2 = idx1 + rand_int(1,(sol.sols.size())-idx1);
-        res[idx1],res[idx2] = res[idx2],res[idx1];
-    }
-    else{
-        int idx1 = rand_int(0,sol.end);
-        int idx2 = rand_int(0,sol.end);
+    int idx1,idx2;
 
-        while(idx1 ==idx2){
-            idx2 = rand_int(0,sol.end);
+    if (sol.end < int(sol.sols.size()) && sol.end > 0)
+    {
+        idx1 = rand_int(0,sol.end-1);                       //here need to be -1 since we need index (n exclusive)
+        idx2 = idx1 + rand_int(1,(sol.sols.size()-1)-idx1);
+        if(res[idx1] > 100 or res[idx2]>100)
+        {
+            std::cout<<"first 1:"<<res[idx1]<<" 2:"<<res[idx2]<<std::endl;
+            std::cout<<"idx1:"<<idx1<<" idx2:"<<idx2<<std::endl;
         }
-
-        res[idx2] = res[idx1];
-        res[idx1]  = res[idx2];
+        std::swap(res[idx1],res[idx2]);
     }
-    // #insert
+    else
+    {
+        idx1 = rand_int(0,sol.end-1);
+        idx2 = rand_int(1,sol.end-1);
 
-    // reverse
-    std::cout<<"line 70"<<std::endl;
+        if(idx1 == idx2){
+            idx2 = 0;
+        }
+        if(res[idx1] > 100 or res[idx2]>100)
+        {
+            std::cout<<"sol end:"<<sol.end<<std::endl;
+            std::cout<<"second case 1:"<<res[idx1]<<" 2:"<<res[idx2]<<std::endl;
+            std::cout<<"idx1:"<<idx1<<" idx2:"<<idx2<<std::endl;
+        }
+        std::swap(res[idx1],res[idx2]);
+    }
     return res;
-    
+}
+
+std::vector<int>  reverse_task(Solution& sol, const std::vector<Task> tasks)
+{
+    std::vector<int> res = sol.sols;
+    int curr_time = 0;
+    int end = sol.end != -1 ? sol.end : res.size();
+    int idx1=end-1,idx2=end;
+    bool flag1 = false, flag2 = false;
+
+    for(int i=0;i<end;i++)
+    {
+        if(tasks[res[i]].deadline > curr_time)  //may be delayed
+        {
+            if(rand_01() > exp(curr_time-tasks[res[i]].deadline))  //have p=1-exp to choose it as idx1
+            {
+                idx1 = i;
+                flag1= true;
+            }
+        }
+        else if(tasks[res[i]].deadline < curr_time)
+        {
+            idx2 = i;
+            flag2= true;
+        }
+        curr_time += tasks[res[i]].duration;
+        if( (flag1&&flag2) || curr_time>=1440)
+            break;
+    }
+    std::swap(res[idx1],res[idx2]);
+    std::cout<<"1:"<<idx1<<"2:"<<idx2<<std::endl;
+    return res;
+}
+
+std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks) 
+{    
+    int operation;
+
+    //operation = rand_int(0,1);
+    operation = 0;
+
+    if(operation == 0)
+        return insert_task(sol,tasks);
+    else
+        return reverse_task(sol,tasks);
 }
 
 float eval_sol(Solution& sol, const std::vector<Task> tasks) {
-    std::cout<<"line 76"<<std::endl;
     float curr_time = 0;
     float total_profit = 0;
     int i;
     if (sol.end == -1){
         sol.end = sol.sols.size();
-        std::cout<<"line 85 "<<  sol.end <<"\n"; 
         assert (sol.end == tasks.size());  
         for (i=0;i<sol.end;i++){
             if (tasks[sol.sols[i]-1].duration + curr_time >= 1440){
@@ -97,7 +148,6 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
     }
 
     else{
-        std::cout<<"line 95"<<std::endl;
         for (i=0;i<sol.end;i++){
             // std::cout<<i<<' '<< sol.sols[i]<<"\n";
         }
@@ -113,7 +163,6 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
 
     }
     sol.end = i;
-    std::cout<<"line 106"<<std::endl;
     return total_profit;
 }
 
@@ -123,8 +172,8 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
     // float profit = eval_sol(sol, tasks);
     // return std::make_pair(sol, profit);
     
-    int epochs = 100;
-    int M = 500;
+    int epochs = 10;
+    int M = 30;
     Solution solution;
     int n = tasks.size();
     for (int i = 0; i < n; i++){
@@ -132,18 +181,20 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
     }
     solution.end = n;
     std::random_shuffle ( solution.sols.begin(), solution.sols.end() );
+
+    std::cout<<"the initial:"<<std::endl;
+    for (int i = 0; i < n; i++){
+        std::cout<<solution.sols[i]<<std::endl;
+    }
    
     std::vector<float> temperature_list;
     float initial_acceptance = 0.4;
-    std::cout<<"line 138 "<<  solution.end <<"\n"; 
     float profit = eval_sol(solution,tasks);
-    std::cout<<"line 140 "<<  solution.end <<"\n"; 
     for (int i=0;i<10;i++){
         std::vector<int>  next_sol  = trans_sol(solution,tasks);
         Solution Next_sol;
         Next_sol.sols = next_sol;
         Next_sol.end = solution.end;
-        std::cout<<"line 146 "<<  solution.end <<"\n"; 
         float next_profit = eval_sol(Next_sol,tasks);
         temperature_list.push_back(-abs(next_profit-profit)/log(initial_acceptance));
 
@@ -171,7 +222,7 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
             }
             
             else{
-                float r = rand_int(0,10)/10.0;
+                float r = rand_01();
                 float max = *std::max_element(temperature_list.begin(),temperature_list.end());
                 if (r < exp((next_profit-profit)/max)){
                     flag += 1;
@@ -187,5 +238,5 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
             temperature_list.push_back(mean(temperature_list)/flag);
         }
     }
-
+    return std::pair<Solution, float>(solution,profit);
 }
