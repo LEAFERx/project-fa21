@@ -6,6 +6,10 @@
 #include <cmath>
 
 #include <assert.h> 
+#include <algorithm>
+#include <random>
+#include <numeric>
+
 
 struct Task {
     int task_id;
@@ -17,7 +21,6 @@ struct Task {
         float m_minutes_late = std::max(float(0), minutes_late); 
         return  perfect_benefit * exp(-0.0170 * m_minutes_late);
     }
-
 };
 
 class Solution {
@@ -28,20 +31,16 @@ public:
 
 std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks);
 
+
 int rand_int(int a, int b){
-    return a + ( std::rand() % ( b - a + 1 ) );
+    static std::random_device rd;
+    static std::mt19937 rng(rd());
+    std::uniform_int_distribution<int> dist(a, b + 1);
+    return dist(rng);
 }
 
-float mean(std::vector<float> a){
-     float return_value = 0.0;
-        int n = a.size();
-       
-        for ( int i=0; i < n; i++)
-        {
-            return_value += a[i];
-        }
-       
-        return ( return_value / n);
+float mean(std::vector<float>& a){    
+    return std::accumulate(a.begin(), a.end(), 0) / a.size();
 }
 
 #endif
