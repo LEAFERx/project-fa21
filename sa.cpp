@@ -132,9 +132,23 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
     float curr_time = 0;
     float total_profit = 0;
     int i;
+
+    for(std::vector<int>::iterator iter = sol.sols.begin();sol.sols.end();std::next(iter))
+    {
+        if(*iter > sol.sols.size() || *iter <= 0)
+        {
+            cout<<"not valid solution"<<endl;
+            return -1.0;
+        }
+        if(std::count(sol.sols.begin(),sol.sols.end(),*iter) > 1)       // cannot repeat tasks
+        {
+            cout<<"not valid solution"<<endl;
+            return -1.0;
+        }
+    }
+
     if (sol.end == -1){
         sol.end = sol.sols.size();
-        assert (sol.end == tasks.size());  
         for (i=0;i<sol.end;i++){
             if (tasks[sol.sols[i]-1].duration + curr_time >= 1440){
                 i -= 1;
@@ -143,14 +157,11 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
             float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
             Task tsk = tasks[sol.sols[i]-1];
             total_profit +=  tsk.get_late_benefit(exceed_time);
-            curr_time += tasks[sol.sols[i]-1].duration ;
+            curr_time += tasks[sol.sols[i]-1].duration;
         }
     }
 
     else{
-        for (i=0;i<sol.end;i++){
-            // std::cout<<i<<' '<< sol.sols[i]<<"\n";
-        }
         for (i=0;i<sol.end;i++){
             float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
             Task tsk = tasks[sol.sols[i]-1];
@@ -159,8 +170,6 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
             curr_time += tasks[sol.sols[i]-1].duration ;
             // std::cout<<"line 102 "<< i <<std::endl;
         }
-        // std::cout<<"line 105 "<< i <<std::endl;
-
     }
     sol.end = i;
     return total_profit;
