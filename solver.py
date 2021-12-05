@@ -31,7 +31,8 @@ def cli(solver, eval, force_replace, case):
             return
         tasks = read_input_file(input_path)
         sol = read_output_file(output_path)
-        print(f"Profit: {sa.eval_sol(sol, tasks, len(sol))[0]}")
+        profit = sa.eval_sol(sol, tasks, len(sol))[0]
+        print(f"Profit: {profit}")
         return
     
     if input_path == None:
