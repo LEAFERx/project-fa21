@@ -27,9 +27,13 @@ class Solution {
 public:
     std::vector<int> sols;
     int end = -1;
+
+    Solution() {}
+    Solution(const std::vector<int> _sols) : sols(_sols) {}
 };
 
 std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks);
+float eval_sol(Solution& sol, const std::vector<Task>& tasks);
 
 
 int rand_int(int a, int b){
@@ -41,8 +45,8 @@ int rand_int(int a, int b){
 
 double rand_01(){
     static std::random_device rd;
-    static std::default_random_engine rng {rd()};
-    std::uniform_real_distribution<double> dist(0.0, 1.0);
+    static std::default_random_engine rng(rd());
+    static std::uniform_real_distribution<double> dist(0.0, 1.0);
     return dist(rng);
 }
 

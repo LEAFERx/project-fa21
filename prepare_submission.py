@@ -18,3 +18,4 @@ if __name__ == '__main__':
                     submission[input_path] = output
     with open(submission_name, 'w') as f:
         f.write(json.dumps(submission))
+    print("done")

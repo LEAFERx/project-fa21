@@ -30,7 +30,7 @@ Solution seed_sol(const std::vector<Task> tasks) {
             }
         }
         if (idx == -1){  
-            std::cout<<"line 30 "<<  sol.end <<"\n";     // if all task are not valid
+            // // std::cout<<"line 30 "<<  sol.end <<"\n";     // if all task are not valid
             for (int k = sol.end; k < sol.end + n; k++ ){
             sol.sols[k] = residual_list[k-sol.end];
             }
@@ -57,10 +57,10 @@ std::vector<int>  insert_task(Solution& sol, const std::vector<Task> tasks)
     {
         idx1 = rand_int(0,sol.end-1);                       //here need to be -1 since we need index (n exclusive)
         idx2 = idx1 + rand_int(1,(sol.sols.size()-1)-idx1);
-        if(res[idx1] > 100 or res[idx2]>100)
+        if(res[idx1] > 100 || res[idx2]>100)
         {
-            std::cout<<"first 1:"<<res[idx1]<<" 2:"<<res[idx2]<<std::endl;
-            std::cout<<"idx1:"<<idx1<<" idx2:"<<idx2<<std::endl;
+            // std::cout<<"first 1:"<<res[idx1]<<" 2:"<<res[idx2]<<std::endl;
+            // std::cout<<"idx1:"<<idx1<<" idx2:"<<idx2<<std::endl;
         }
         std::swap(res[idx1],res[idx2]);
     }
@@ -72,11 +72,11 @@ std::vector<int>  insert_task(Solution& sol, const std::vector<Task> tasks)
         if(idx1 == idx2){
             idx2 = 0;
         }
-        if(res[idx1] > 100 or res[idx2]>100)
+        if(res[idx1] > 100 || res[idx2]>100)
         {
-            std::cout<<"sol end:"<<sol.end<<std::endl;
-            std::cout<<"second case 1:"<<res[idx1]<<" 2:"<<res[idx2]<<std::endl;
-            std::cout<<"idx1:"<<idx1<<" idx2:"<<idx2<<std::endl;
+            // std::cout<<"sol end:"<<sol.end<<std::endl;
+            // std::cout<<"second case 1:"<<res[idx1]<<" 2:"<<res[idx2]<<std::endl;
+            // std::cout<<"idx1:"<<idx1<<" idx2:"<<idx2<<std::endl;
         }
         std::swap(res[idx1],res[idx2]);
     }
@@ -115,7 +115,7 @@ std::vector<int>  reverse_task(std::vector<int>& res,int end, const std::vector<
     }
 
     std::swap(res[idx1],res[idx2]);
-    std::cout<<"1:"<<idx1<<" 2:"<<idx2<<std::endl;
+    // // std::cout<<"1:"<<idx1<<" 2:"<<idx2<<std::endl;
     return res;
 }
 
@@ -141,7 +141,7 @@ std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks)
     else
     {
         int idx1,idx2;
-        //std::cout<<"here"<<std::endl;
+        //// std::cout<<"here"<<std::endl;
 
         idx1 = rand_int(0,end-1);                       //here need to be -1 since we need index (n exclusive)
         idx2 = rand_int(1,end-1);
@@ -154,22 +154,22 @@ std::vector<int>  trans_sol(Solution& sol, const std::vector<Task> tasks)
     }
 }
 
-float eval_sol(Solution& sol, const std::vector<Task> tasks) {
+float eval_sol(Solution& sol, const std::vector<Task>& tasks) {
     float curr_time = 0;
     float total_profit = 0;
     int i;
 
     for(std::vector<int>::iterator iter = sol.sols.begin();iter != sol.sols.end();iter++)
     {
-        if(*iter > sol.sols.size() || *iter <= 0)
+        if(*iter > tasks.size() || *iter <= 0)
         {
-            std::cout<<"not valid solution"<<std::endl;
+            // std::cout<<"not valid solution"<<std::endl;
             return -1.0;
         }
         if(std::count(sol.sols.begin(),sol.sols.end(),*iter) > 1)       // cannot repeat tasks
         {
-            std::cout<<"not valid solution"<<std::endl;
-            return -1.0;
+            // std::cout<<"not valid solution"<<std::endl;
+            return -2.0;
         }
     }
 
@@ -188,15 +188,20 @@ float eval_sol(Solution& sol, const std::vector<Task> tasks) {
     }
 
     else{
-        for (i=0;i<sol.end;i++){
+        for (i=0;i<sol.sols.size();i++){
+            if (tasks[sol.sols[i]-1].duration + curr_time >= 1440){
+                i -= 1;
+                break;
+            }
             float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
             Task tsk = tasks[sol.sols[i]-1];
-            // std::cout<<"line 99"<<std::endl;
+            // // std::cout<<"line 99"<<std::endl;
             total_profit +=  tsk.get_late_benefit(exceed_time);
             curr_time += tasks[sol.sols[i]-1].duration ;
-            // std::cout<<"line 102 "<< i <<std::endl;
+            // // std::cout<<"line 102 "<< i <<std::endl;
         }
     }
+    std::cout<<"after eval end is "<<i<<std::endl;
     sol.end = i;
     return total_profit;
 }
@@ -207,8 +212,8 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
     // float profit = eval_sol(sol, tasks);
     // return std::make_pair(sol, profit);
     
-    int epochs = 100;
-    int M = 1500;
+    int epochs = 10;
+    int M = 15;
     Solution solution;
     int n = tasks.size();
     for (int i = 0; i < n; i++){
@@ -217,9 +222,9 @@ std::pair<Solution, float> SA_solve(const std::vector<Task>& tasks) {
     solution.end = n;
     std::random_shuffle ( solution.sols.begin(), solution.sols.end() );
 
-    // std::cout<<"the initial:"<<std::endl;
+    // // std::cout<<"the initial:"<<std::endl;
     // for (int i = 0; i < n; i++){
-    //     std::cout<<solution.sols[i]<<std::endl;
+    //     // std::cout<<solution.sols[i]<<std::endl;
     // }
    
     std::vector<float> temperature_list;

@@ -27,11 +27,32 @@ def cli(solver, eval, force_replace, case):
     
     if eval:
         if output_path == None:
-            print("Provide a case name for eval")
-            return
-        tasks = read_input_file(input_path)
-        sol = read_output_file(output_path)
-        print(f"Profit: {sa.eval_sol(sol, tasks, len(sol))[0]}")
+            for folder in os.listdir('inputs'):
+                if not folder.startswith('.'):
+                    for input_path in os.listdir("inputs/" + folder):
+                        output_path = 'outputs/' + folder+'/' + input_path[:-3] + '.out'
+                        print("now is:", output_path)
+                        tasks = read_input_file('inputs/'+ folder+'/'+input_path)
+                        sol = read_output_file(output_path)
+                        # profit = sa.eval_sol(sol, tasks, len(sol))[0]
+                        profit, new_sol = _sa.eval(sol, tasks)
+                        print(f"Profit: {profit}")
+                        if profit < 0:
+                            print("Bad Solution!")
+                        if len(sol) != len(new_sol):
+                            print("Time Exceed! Override with correct subsol.")
+                            write_output_file(output_path, new_sol)
+        else:
+            tasks = read_input_file(input_path)
+            sol = read_output_file(output_path)
+            # profit = sa.eval_sol(sol, tasks, len(sol))[0]
+            profit, new_sol = _sa.eval(sol, tasks)
+            print(f"Profit: {profit}")
+            if profit < 0:
+                print("Bad Solution!")
+            if len(sol) != len(new_sol):
+                print("Time Exceed! Override with correct subsol.")
+                write_output_file(output_path, new_sol)
         return
     
     if input_path == None:
@@ -43,42 +64,43 @@ def cli(solver, eval, force_replace, case):
                     tasks = read_input_file('inputs/'+ folder+'/'+input_path)
                     if os.path.exists(output_path):
                         old_sol = read_output_file(output_path)
-                        old_profit = sa.eval_sol(old_sol, tasks)[0]
+                        old_profit, _ = _sa.eval(old_sol, tasks)
                     else:
-                        old_profit = None
+                        old_profit = -1
                     if solver == 'sapy':
                         sol, end = sa.SA(tasks)
-                        profit = sa.eval_sol(sol, tasks, end)[0]
-                        sol = sol[:end]
+                        profit, sol = _sa.eval(sol, tasks)
                     elif solver == 'dp':
                         sol = dp_solver(tasks)
-                        profit = sa.eval_sol(sol, tasks, len(sol))[0]
+                        profit, sol = _sa.eval(sol, tasks)
                     else:
                         sol, profit = _sa.solve(tasks)
                     print(f"Get Profit: {profit}")
+                    print(f"Old Profit: {old_profit}")
                     if old_profit < profit or force_replace:
+                        print(f"Replace existing file {output_path}")
                         write_output_file(output_path, sol)
     else:
         tasks = read_input_file(input_path)
         if os.path.exists(output_path):
             old_sol = read_output_file(output_path)
-            old_profit = sa.eval_sol(old_sol, tasks, len(old_sol))[0]
+            old_profit, _ = _sa.eval(old_sol, tasks)
         else:
-            old_profit = None
+            old_profit = -1
         if solver == 'sapy':
             sol, end = sa.SA(tasks)
-            profit = sa.eval_sol(sol, tasks, end)[0]
-            sol = sol[:end]
+            profit, sol = _sa.eval(sol, tasks)
         elif solver == 'dp':
             sol = dp_solver(tasks)
-            profit = sa.eval_sol(sol, tasks, len(sol))[0]
+            profit, sol = _sa.eval(sol, tasks)
         else:
             sol, profit = _sa.solve(tasks)
             print("finish, the sol:",sol)
         print(f"Get Profit: {profit}")
+        print(f"Old Profit: {old_profit}")
         if old_profit < profit or force_replace:
             print(f"Replace existing file {output_path}")
-            #write_output_file(output_path, sol)
+            write_output_file(output_path, sol)
             
 
 def solve_sapy(tasks):
