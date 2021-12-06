@@ -176,8 +176,8 @@ float eval_sol(Solution& sol, const std::vector<Task>& tasks) {
     if (sol.end == -1){
         sol.end = sol.sols.size();
         for (i=0;i<sol.end;i++){
-            if (tasks[sol.sols[i]-1].duration + curr_time >= 1440){
-                i -= 1;
+            if (tasks[sol.sols[i]-1].duration + curr_time > 1440){
+                // i -= 1;
                 break;
             }
             float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
@@ -189,8 +189,8 @@ float eval_sol(Solution& sol, const std::vector<Task>& tasks) {
 
     else{
         for (i=0;i<sol.sols.size();i++){
-            if (tasks[sol.sols[i]-1].duration + curr_time >= 1440){
-                i -= 1;
+            if (tasks[sol.sols[i]-1].duration + curr_time > 1440){
+                // i -= 1;
                 break;
             }
             float exceed_time = tasks[sol.sols[i]-1].duration + curr_time - tasks[sol.sols[i]-1].deadline;
