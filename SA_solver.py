@@ -69,7 +69,7 @@ def eval_sol(sol,tasks,n=None):
         n = len(sol)
         assert n == len(tasks)   #error..
         for i in range(n):          #iter all task
-            if tasks[sol[i]-1].get_duration() + curr_time >= 1440:
+            if tasks[sol[i]-1].get_duration() + curr_time > 1440:
                 i -= 1
                 break
             exceed_time = tasks[sol[i]-1].get_duration() + curr_time - tasks[sol[i]-1].get_deadline()
@@ -77,7 +77,7 @@ def eval_sol(sol,tasks,n=None):
             curr_time += tasks[sol[i]-1].get_duration() 
     else:
         for i in range(n):          #iter all real task
-            if tasks[sol[i]-1].get_duration() + curr_time >= 1440:
+            if tasks[sol[i]-1].get_duration() + curr_time > 1440:
                 i -= 1
                 break
             exceed_time = tasks[sol[i]-1].get_duration() + curr_time - tasks[sol[i]-1].get_deadline()
